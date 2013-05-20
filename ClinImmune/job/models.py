@@ -1,6 +1,12 @@
 from mongoengine import *
 from datetime import datetime
 
+"""
+TODO:
+    override save methods to add university information for the user
+"""
+
+
 connect('jobdb')
 
 EPITOPE_ANALYSIS = '1'
@@ -57,26 +63,33 @@ class Job(Document):
     }
     """
     
-    user = URLField(required=False) # Hyperlink to user
+    user = URLField() # Hyperlink to user
     university = StringField(required=True)
     job_type = StringField(max_length=2, choices=JOB_TYPE_CHOICES)
     grouping = IntField(min_value=1, max_value=4)
     created = DateTimeField(default=datetime.now)
+    status = StringField() # used for the casae
     finished = BooleanField(default=False)
     patients = ListField(EmbeddedDocumentField(Patient))
     return_data = ListField(EmbeddedDocumentField(AnalysisData))
     
 class Patient(EmbeddedDocument):
+    """
+    Defines a patient model, which is embedded into the job model.
+    """
     subject_id = IntField(required=True)
     control = BooleanField(required=True)
     race = StringField(required=True)
     alleles = ListField(StringField())
 
 class AnalysisData(EmbeddedDocument):
+    """
+    Defines an analysis model which is embedded into the job model. This model
+    contains all of the output data after the program is executed.
+    """
     module = StringField()
     positions = ListField(IntField())
-    affected = IntField()
-    control = IntField()
-    p-value = FloatField()
-    p-adjusted = FloatField()
+    control = BooleanField()
+    p-value = DecimalField()
+    p-adjusted = DecimalField()
     

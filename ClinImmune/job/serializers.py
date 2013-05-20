@@ -37,6 +37,7 @@ class JobSerializer(serializers.Serializer):
         min_value = 1,
         max_value = 4
     )
+    status = serializers.CharField()
     
     patients = PatientSerializer()
     return_data = AnalysisSerializer()
@@ -50,11 +51,32 @@ class JobSerializer(serializers.Serializer):
 
 class PatientSerializer(serializers.Serializer):
     
-    subject_id = serializers.IntegerField()
-    control = serializers.BooleanField()
-    race = serializers.ChoiceField()
-    alleles = serializers.AlleleField(resolution=2)
+    subject_id = serializers.IntegerField(required=True)
+    control = serializers.BooleanField(required=True)
+    race = serializers.ChoiceField(required=True)
+    alleles = serializers.AlleleField(
+        resolution=2,
+        required=True    
+    )
+    
+    def restore_object(self, attrs, instance=None):
+        if instance:
+            raise serializers.ValidationError(
+                "Jobs submitted may not be edited"
+            )
+        return Patient(**attrs)
 
 class AnalysisSerializer(serializers.Serializer):
     
-    module = serializers.
+    module = serializers.CharField()
+    positions = serializers.IntegerField(many=True)
+    control = serializers.BooleanField()
+    p-value = serializers.DecimalField()
+    p-adjusted = serializers.DecimalField()
+    
+    def restore_object(self, attrs, instance=None):
+        if instance:
+            raise serializers.ValidationError(
+                "Jobs submitted may not be edited"
+            )
+        return AnalysisData(**attrs)
