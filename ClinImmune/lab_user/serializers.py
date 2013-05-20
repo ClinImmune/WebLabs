@@ -1,6 +1,6 @@
 from django.forms import widgets
 from rest_framework import serializers
-from .models import LabUser
+from lab_user.urls import urlpatterns
 
 class UserSerializer(serializers.Serializer):
     """
