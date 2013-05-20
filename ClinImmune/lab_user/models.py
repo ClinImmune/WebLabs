@@ -85,6 +85,8 @@ class LabUser(AbstractBaseUser):
         last_name,
         university,
     although, this will be discussed later
+    
+    Note: the jobs propery cannot be added as the jobs model is based on mongo
     """
     email = models.EmailField(
         verbose_name = 'email address',
@@ -96,7 +98,7 @@ class LabUser(AbstractBaseUser):
     last_name = models.CharField(max_length=50)
     name_is_public = models.BooleanField(default=True)
     university = models.CharField(max_length=150)
-    job_title = models.CharField(max_length = 50)
+    job_title = models.CharField(max_length=50)
     bio = models.TextField()
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
@@ -111,6 +113,14 @@ class LabUser(AbstractBaseUser):
         'university',
     ]
     
+    @property
+    def full_name(self):
+        return self.first_name + " " + self.last_name
+    
+    @property 
+    def is_staff(self):
+        return self.is_admin
+    
     def get_full_name(self):
         return self.full_name
         
@@ -119,17 +129,4 @@ class LabUser(AbstractBaseUser):
         
     def __unicode__(self):
         return self.full_name
-    
-    @property
-    def full_name(self):
-        return self.first_name + " " + self.last_name
-    
-    @property 
-    def is_staff(self):
-        return self.is_admin
-    """
-    @property
-    def jobs(self):
-        return self.jobs_set.all()
-    """
 
