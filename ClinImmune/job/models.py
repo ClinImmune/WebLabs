@@ -9,13 +9,6 @@ JOB_TYPE_CHOICES = (
     (EPITOPE_ANALYSIS, 'Epitope Analysis')
 )
 
-GROUP_COUNT = (
-    1,
-    2,
-    3,
-    4
-)
-
 RACE_CHOICS = (
     ('Un','Unknown')
 )
@@ -27,7 +20,7 @@ class Job(Document):
         "user": "/users/1",
 
         "university": "UC Denver",
-        "Job Type": "1",
+        "Job Type": 1,
         "created": "05-04-2013",
         "finished": "True",
         "patients": [
@@ -50,15 +43,15 @@ class Job(Document):
             {
                 "module": "ARQL",
                 "positions": [
-                    "57",
-                    "70",
-                    "84",
-                    "85"
+                    57,
+                    70,
+                    84,
+                    85
                 ],
-                "affected": "1000",
-                "control": "900",
-                "p-value": "1.625e-64",
-                "p-adjusted": "2.948e-57"
+                "affected": 1000,
+                "control": 900,
+                "p-value": 1.625e-64,
+                "p-adjusted": 2.948e-57
             },
         ],
     }
@@ -67,6 +60,7 @@ class Job(Document):
     user = URLField(required=False) # Hyperlink to user
     university = StringField(required=True)
     job_type = StringField(max_length=2, choices=JOB_TYPE_CHOICES)
+    grouping = IntField(min_value=1, max_value=4)
     created = DateTimeField(default=datetime.now)
     finished = BooleanField(default=False)
     patients = ListField(EmbeddedDocumentField(Patient))
