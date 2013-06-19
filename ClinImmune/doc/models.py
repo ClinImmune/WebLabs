@@ -39,7 +39,7 @@ class Document(models.Model):
 		super(test, self).save(*args, **kwargs)
 	
 	class Meta:
-		order_with_respect_to = 'title'
+		ordering = ['title']
 
 class Chapter(models.Model):
 	"""
