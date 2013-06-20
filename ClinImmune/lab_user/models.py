@@ -8,6 +8,17 @@ class LabUserManager(BaseUserManager):
     """
     A new user manager for both standard and administrative users
     """
+
+    def normalize_email(self, email):
+    	email = email or ''
+    	try:
+            email_name, domain_part = email.strip().rsplit('@', 1)
+        except ValueError:
+            pass
+        else:
+            email = '@'.join([email_name, domain_part.lower()])
+        print email
+        return email
     
     def create_user(
             self, 
@@ -36,17 +47,16 @@ class LabUserManager(BaseUserManager):
             
         # Note: a biography and job_title are not required
         user = self.model(
-            email=LabUserManager.normalize_email(email),
+            email=BaseUserManager.normalize_email(email),
             first_name=first_name,
             last_name=last_name,
             university=university,
             job_title=job_title,
-            bio=bio,
+            bio=bio
         )
         user.set_password(password)
         user.save(using=self._db)
         return user
-        
         
     def create_superuser(
             self, 
@@ -63,7 +73,6 @@ class LabUserManager(BaseUserManager):
         """    
                         
         user = self.create_user(
-            self, 
             email=email,
             first_name=first_name,
             last_name=last_name,
@@ -86,7 +95,6 @@ class LabUser(AbstractBaseUser):
         university,
     although, this will be discussed later
     
-    Note: the jobs propery cannot be added as the jobs model is based on mongo
     """
     email = models.EmailField(
         verbose_name = 'email address',
@@ -98,8 +106,8 @@ class LabUser(AbstractBaseUser):
     last_name = models.CharField(max_length=50)
     name_is_public = models.BooleanField(default=True)
     university = models.CharField(max_length=150)
-    job_title = models.CharField(max_length=50)
-    bio = models.TextField()
+    job_title = models.CharField(max_length=50, null=True)
+    bio = models.TextField(null=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)

@@ -9,7 +9,7 @@ class Job(models.Model):
 	It's purpose is only
 	"""
 	title = models.CharField(max_length=144)
-	submitter = models.ForeignKet(settings.AUTH_USER_MODEL)
+	submitter = models.ForeignKey(settings.AUTH_USER_MODEL)
 	university = models.CharField(max_length=150)
 	date_created = models.DateTimeField(editable=False)
 	finished = models.BooleanField(default=False)
