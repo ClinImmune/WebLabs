@@ -129,6 +129,10 @@ class LabUser(AbstractBaseUser):
     def is_staff(self):
         return self.is_admin
     
+    @property
+    def is_public(self):
+    	return self.name_is_public
+    
     def get_full_name(self):
         return self.full_name
         

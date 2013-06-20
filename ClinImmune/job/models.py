@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from mongoengine import * 
 
 import datetime
 
@@ -20,3 +21,8 @@ class Job(models.Model):
 			
 	def __unicode__(self):
 		return self.title
+
+class JobMongo(Document):
+	"""
+	Defines a document for storing submitted jobs to be processed
+	"""

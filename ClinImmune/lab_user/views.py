@@ -6,12 +6,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-import json
-
-class NewUser(APIView):
+class UserList(APIView):
     """
     Creates a new user, only accepts POST requests
     """
+
     def post(self, request, format=None):
         serializer = UserSerializer(data=request.DATA)
         if serializer.is_valid():
@@ -41,10 +40,4 @@ class UserDetail(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
-        
-    def put(self, request, pk, format=None):
-        user = self.get_object(pk)
-        serializer = UserSerializer(user, data=request.DATA)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)  
+

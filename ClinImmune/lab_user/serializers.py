@@ -2,7 +2,7 @@ from django.forms import widgets
 from rest_framework import serializers
 from .models import LabUser
 
-class UserSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.HyperlinkedModelSerializer):
     """
     Serializes both new and current users for managing user data
     """
@@ -15,19 +15,8 @@ class UserSerializer(serializers.ModelSerializer):
         max_length=50,
         required=False
     )
-    bio = serializers.serializers
+    bio = serializers.CharField(required=False)
     
     class Meta:
         model = LabUser
-        fields = (
-            # Required fields
-            'email',
-            'first_name',
-            'last_name',
-            'university',
-            
-            # Optional fields
-            'job_title',
-            'bio',
-        )
 
