@@ -10,6 +10,7 @@ class Job(models.Model):
 	It's purpose is only
 	"""
 	title = models.CharField(max_length=144)
+	information = models.TextField(null=True)
 	submitter = models.ForeignKey(settings.AUTH_USER_MODEL)
 	university = models.CharField(max_length=150)
 	date_created = models.DateTimeField(editable=False)
@@ -26,3 +27,14 @@ class JobMongo(Document):
 	"""
 	Defines a document for storing submitted jobs to be processed
 	"""
+	username = StringField()
+	jobtype = EpitopeJobField()
+	
+class Patient(EmbeddedDocument):
+	patient_id = StringField()
+	dx = BooleanField()
+	race = StringField()
+	loci = ListField(LocusField())
+
+
+	
