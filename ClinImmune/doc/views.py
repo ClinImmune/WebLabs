@@ -131,3 +131,4 @@ class SectionDetail(AbstractAPIView):
 		section = self.get_object(pk)
 		section.delete
 		return Response(status=status.HTTP_204_NO_CONTENT)
+		
