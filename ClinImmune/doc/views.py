@@ -89,6 +89,7 @@ class ChapterDetail(AbstractAPIView):
 			
 class SectionDetail(AbstractAPIView):
 	"""
+	Defines an API endpoint for updating and deleting sections
 	"""
 	def get():
 		section = 
