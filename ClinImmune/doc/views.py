@@ -5,10 +5,26 @@ from rest_framework import status
 from .models import *
 from .serializers import *
 
+"""
+NOTICE:
+
+add *args, and **kwargs to all __init__ functions
+should look at fields.py in utils
+"""
+
+
 class AbstractAPIView(APIView):
+	
+	model = None
+	
+	def __init__(self, *args, **kwargs):
+		if self.model is None:
+			raise ValueError("You need to define a model for your view!")
+		super(AbstractAPIView, self).__init__(*args, **kwargs)
+		
 	def get_object(self, pk):
 		try:
-			return Document.objects.get(pk=pk)
+			return self.model.objects.get(pk=pk)
 		except Document.DoesNotExist:
 			raise Http404
 
@@ -32,7 +48,8 @@ class DocumentList(APIView):
 		return Reponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 		
 class DocumentDetail(AbstractAPIView):
-
+	model = Document
+	
 	# Returns a table of contents
 	def get(self, request, pk, format=None):
 		document = self.get_object(pk)
@@ -61,15 +78,17 @@ class ChapterDetail(AbstractAPIView):
 	Defines an api endpoint for returning a chapter along with its sections
 	It will return a JSON document
 	"""
+	model = Chapter
+	
 	# Returns a chapter
 	def get(self, request, pk, format=None):
-		chapter = get_object(self, pk)
+		chapter = self.get_object(self, pk)
 		serializer = ChapterSerializer(chapter)
 		return Response(serializer.data)
 
 	# Updates a chapters information
 	def patch(self, request, pk, format=None):
-		chapter = get_object(self, pk)
+		chapter = self.get_object(self, pk)
 		serializer = ChapterSerializer(chapter)
 		if serializer.is_valid()
 			serializer.save()
@@ -85,16 +104,30 @@ class ChapterDetail(AbstractAPIView):
 		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 	# Deletes a chapter
 	def delete(self, request, pk, format=None):
-		chapter = get_object
+		chapter = self.get_object(pk=pk)
+		chapter.delete()
+		return Response(status=status.HTTP_204_NO_CONTENT)
 			
 class SectionDetail(AbstractAPIView):
 	"""
 	Defines an API endpoint for updating and deleting sections
 	"""
-	def get():
-		section = 
+	model = Section
 	
+	def get(self, request, pk, format=None):
+		section = self.get_object(pk)
+		serializer = SectionSerializer(section)
+		return Response(serializer.data)
 	
-	def patch():
-	
-	def delete():
+	def patch(self, request, pk, format=None):
+		section = self.get_object(pk)
+		serializer = SectionSerializer(section, data=request.DATA)
+		if serializer.is_valid():
+			serializer.save()
+			return Response(serializer.data)
+		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+		
+	def delete(self, request, pk, format=None):
+		section = self.get_object(pk)
+		section.delete
+		return Response(status=status.HTTP_204_NO_CONTENT)
