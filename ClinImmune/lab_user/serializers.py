@@ -11,7 +11,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     last_name = serializers.CharField(max_length=50)
     university = serializers.CharField(max_length=150)
     
-    job_title = serializers.Charfield(
+    job_title = serializers.CharField(
         max_length=50,
         required=False
     )

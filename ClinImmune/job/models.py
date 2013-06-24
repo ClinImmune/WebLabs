@@ -1,7 +1,7 @@
 from django.db import models
 from django.conf import settings
 from mongoengine import * 
-from utils.fields import *
+from utils.mongo_fields import *
 
 import datetime
 
@@ -18,6 +18,8 @@ class Job(models.Model):
 	finished = models.BooleanField(default=False)
 	object_id = models.IntegerField()
 	
+	# Do not require university for saving model, instead automatically save it
+	# from the save method.
 	def save(self, *args, **kwargs):
 		if not self.id:
 			self.date_added = datetime.datetime.now()
@@ -25,18 +27,27 @@ class Job(models.Model):
 	def __unicode__(self):
 		return self.title
 
+class Patient(EmbeddedDocument):
+	patient_id = StringField()
+	dx = BooleanField()
+	race = MongoRaceField()
+	loci = ListField(MongoAlleleField())
+
+	def get_loci(self, loci=None):
+		"""
+		Defines a method used by the serializers for returning a list of loci,
+		or generates the list of loci
+		"""
+		if loci and self.dx:
+			print "asdf"
+		else:
+			raise ValueError("You must provide a list of loci")
+
 class JobMongo(Document):
 	"""
 	Defines a document for storing submitted jobs to be processed
 	"""
 	combinations = IntField(min_value=1, max_value=7)
-	
-	
-class Patient(EmbeddedDocument):
-	patient_id = StringField()
-	dx = BooleanField()
-	race = StringField()
-	loci = ListField(LocusField())
-
-
+	locus = StringField() # validated in serializer
+	patients = ListField(EmbeddedDocumentField(Patient))
 	
