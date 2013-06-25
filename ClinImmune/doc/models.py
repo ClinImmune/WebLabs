@@ -35,8 +35,8 @@ class Document(models.Model):
 		if not self.id:
 			self.date_added = datetime.datetime.now()
 		self.last_updated = datetime.datetime.now()
-		self.slug_title = slugify(self.title)
-		super(test, self).save(*args, **kwargs)
+		self.slug_title = slugify(self.title)[:40]
+		super(Document, self).save(*args, **kwargs)
 	
 	class Meta:
 		ordering = ['title']
