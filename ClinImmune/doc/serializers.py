@@ -25,10 +25,10 @@ class ChapterSerializer(serializers.HyperlinkedModelSerializer):
 	Defines a serializer for all of the chapters, the schema is defined as
 	above
 	"""
-	sections = SectionNameSerializer(many=True)
+#	sections = SectionNameSerializer(many=True)
 	class Meta:
 		model = Chapter
-		fields = ('title', 'number', 'url', 'sections')
+		fields = ('title', 'number', 'url')
 
 
 class DocumentListSerializer(serializers.HyperlinkedModelSerializer):
@@ -85,7 +85,7 @@ class DocumentSerializer(serializers.HyperlinkedModelSerializer):
 	chapters = ChapterSerializer(many=True, required=False)
 	class Meta:
 		model = Document
-		fields = ('title','date_added','last_updated', 'url')
+		fields = ('title','date_added','last_updated', 'url', 'chapters')
 		read_only_fields = ('date_added', 'last_updated')
 
 

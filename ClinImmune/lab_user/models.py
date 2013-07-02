@@ -3,6 +3,12 @@ from django.contrib.auth.models import (
     AbstractBaseUser, 
     BaseUserManager
 )
+from django.conf import settings
+from collections import OrderedDict
+
+from job.models import Job
+
+URL = URL.settings + "users/"
 
 class LabUserManager(BaseUserManager):
     """
@@ -25,7 +31,7 @@ class LabUserManager(BaseUserManager):
             email,
             first_name,
             last_name,
-            university=None,
+            organization=None,
             job_title=None,
             bio=None,
             password=None
@@ -42,7 +48,7 @@ class LabUserManager(BaseUserManager):
         if not last_name:
             raise ValueError('Users must provide a last name')
             
-        if not university:
+        if not organization:
             raise ValueError('Users must provide an email address')
             
         # Note: a biography and job_title are not required
@@ -50,7 +56,7 @@ class LabUserManager(BaseUserManager):
             email=BaseUserManager.normalize_email(email),
             first_name=first_name,
             last_name=last_name,
-            university=university,
+            organization=organization,
             job_title=job_title,
             bio=bio
         )
@@ -63,7 +69,7 @@ class LabUserManager(BaseUserManager):
             email,
             first_name,
             last_name,
-            university,
+            organization,
             job_title=None,
             bio=None,
             password=None
@@ -76,7 +82,7 @@ class LabUserManager(BaseUserManager):
             email=email,
             first_name=first_name,
             last_name=last_name,
-            university=university,
+            organization=organization,
             job_title=job_title,
             bio=bio,
             password=password
@@ -92,7 +98,7 @@ class LabUser(AbstractBaseUser):
         email,
         first_name,
         last_name,
-        university,
+        organization,
     although, this will be discussed later
     
     """
@@ -105,7 +111,8 @@ class LabUser(AbstractBaseUser):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     name_is_public = models.BooleanField(default=True)
-    university = models.CharField(max_length=150)
+    email_is_public = models.BooleanField(default=False)
+    organization = models.CharField(max_length=150)
     job_title = models.CharField(max_length=50, null=True)
     bio = models.TextField(null=True)
     is_active = models.BooleanField(default=True)
@@ -118,9 +125,58 @@ class LabUser(AbstractBaseUser):
     REQUIRED_FIELDS = [
         'first_name',
         'last_name',
-        'university',
+        'organization',
     ]
     
+    def __init__(self, *args, **kwargs):
+    	super(LabUser, self).__init__(self, *args, **kwargs)
+    	self.schema = {
+    		"first name"   : self.first_name,
+    		"last name"    : self.last_name,
+    		"email"        : self.email,
+    		"organization" : self.organization,
+    		"job title"    : self.job_title,
+    		"bio"          : self.bio,
+    		"date created" : str(self.created)
+    		"url"          : URL + str(self.pk)
+    	}
+    	 
+    ## Generic Accessor properties
+    @property
+    def get_organization(self):
+    	return self.organization
+    	
+    ## Methods for serializing a user into a dictionary
+    @property
+    def jobs(self):
+		return self.job_set.all()
+    
+    # Note: Do not create a user list
+    
+    @property
+    def dict_detail(self):
+    	fields = []
+        if self.name_is_public:
+        	fields += (
+        		"first name", 
+        		"last name", 
+        		"organization", 
+        		"job title", 
+        		"bio", 
+        		"date created"
+        	)
+    		if self.email_is_public:
+    			fields += "email"
+
+    	else:
+    		fields += "organization")
+    		if self.email_is_public:
+    			fields += "email
+    	
+    	return {key: self.schema[key] for key in fields}
+
+
+    ## Django's required properties and methods for custom user classes
     @property
     def full_name(self):
         return self.first_name + " " + self.last_name
@@ -132,6 +188,10 @@ class LabUser(AbstractBaseUser):
     @property
     def is_public(self):
     	return self.name_is_public
+    
+    @property
+    def get_organization(self):
+    	return self.organization
     
     def get_full_name(self):
         return self.full_name

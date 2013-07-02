@@ -1,7 +1,26 @@
 import re
 
-from rest_framework.fields import CharField, WriteableField
+from rest_framework.fields import CharField, RelatedField
 
+class RestLociListField(serializers.RelatedField):
+	"""
+	Currently the implementation only supports loci that are of the form 
+	allele*type:subtype.
+	"""
+	
+	allele_pattern = re.compile(r"""
+		(A|B|C|DMA|DMB|DOA|DOB|DPA1|DPB1|DPA|DPB|DQA|DQB|DQA1|DQB1|DRA|DRB1|
+		DRB3|DRB4|DRB5|E|F|G|H|J|K|L|MICA|MICB|TAP1|TAP2|V) 
+		\*\d\d:\d\d
+		"""
+	)
+	
+	def to_native(self, value):
+		return value
+		
+	def from_native(self, value):	
+		return value
+		
 class RestLocusField(CharField):
 	"""
 	Defines a field of valid loci which can be stored into a mongoengine

@@ -28,6 +28,28 @@ class Document(models.Model):
 	date_added = models.DateTimeField(editable=False)
 	last_updated = models.DateTimeField()
 	
+	def __init__(self, *args, **kwargs):
+		super(Document, self).__init__(*args, **kwargs)
+		self.schema = {
+			"title": self.title,
+			"date added": self.date_added,
+			"last updated": self.last_updated
+			"table of contents": [chapter.dict_list]
+		}
+		
+	# Defines a method which returns a full table of contents
+	@property
+	def chapters(self):
+		return self.chapter_set.all()
+	
+	@property
+	def dict_list(self):
+		return schema
+		
+	@property
+	def dict_detail(self):
+		return 
+	
 	def __unicode__(self):
 		return self.slug_title
 	
@@ -53,6 +75,28 @@ class Chapter(models.Model):
 				verbose_name="Chapter Number"
 	)
 	
+	def __init__(self, *args, **kwargs):
+		super(Chapter, self).__init__(*args, **kwargs)
+		self.schema = {
+			"title": self.title,
+			"number": self.number,
+			"sections": [
+				
+			]
+		}
+		
+	@property
+	def sections(self):
+		return self.section_set.all()
+	
+	@property
+	def dict_list(self):
+		return schema
+	
+	@property
+	def dict_detail(self):
+		return schema
+	
 	def save(self, *args, **kwargs):
 		self.slug_title = slugify(self.title)
 		super(test, self).save(*args, **kwargs)
@@ -72,9 +116,27 @@ class Section(models.Model):
 	slug_title = models.SlugField(max_length=30)
 	text = models.TextField() # Will save text data as md file
 	number = models.IntegerField(
-				unique=True, 
-				verbose_name="Section Number"
+		unique=True, 
+		verbose_name="Section Number"
 	)
+	
+	def __init__(self, *args, **kwargs):
+		super(Section, self).__init__(*args, **kwargs)
+		self.schema = {
+			"title"  : self.title,
+			"number" : self.number,
+			"text"   : self.text
+		}
+	
+	
+	@property
+	def dict_list(self):
+		fields = ["title", "number"]
+		return {key: self.schema[key] for key in fields}
+	
+	@property
+	def dict_detail(self):
+		return self.schema
 	
 	def save(self, *args, **kwargs):
 		self.slug_title = slugify(self.title)

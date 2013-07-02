@@ -8,6 +8,8 @@ connect('job_database')
 
 # Django settings for ClinImmune project.
 
+URL = "127.0.0.1:8000/"
+
 ## ADDITIONAL SETTINGS
 
 AUTH_USER_MODEL = 'lab_user.LabUser'
@@ -133,7 +135,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
+    'restless',
     
     'about',
     'doc',
@@ -173,3 +175,5 @@ LOGGING = {
         },
     }
 }
+
+
