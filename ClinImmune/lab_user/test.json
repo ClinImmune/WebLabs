@@ -1,0 +1,43 @@
+
+{
+"title": "TESTING!!!",
+"information": "test data file",
+"username": "lucas",
+"combiations": "5",
+"locus": "DQA1",
+"patients": [
+	{
+	"patient_id": "1235234",
+	"dx": "affected",
+	"race": "caucasian",
+	"loci": [
+		"DQA1*01:01",
+		"DQA1*04:23",
+		"DQA1*09:02"
+	]},
+	{"patient_id": "15648756",
+	"dx": "control",
+	"race": "african",
+	"loci": [
+		"DQA1*04:31",
+		"DQA1*06:63",
+		"DQA1*59:10"
+	]},
+	{"patient_id": "123475634",
+	"dx": "control",
+	"race": "caucasian",
+	"loci": [
+		"DQA1*41:11",
+		"DQA1*02:43",
+		"DQA1*03:09"
+	]},
+	{"patient_id": "34534564",
+	"dx": "affected",
+	"race": "hispanic",
+	"loci": [
+		"DQA1*09:02",
+		"DQA1*03:01",
+		"DQA1*04:05"
+	]}
+]}
+
