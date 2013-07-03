@@ -53,7 +53,7 @@ class UserDetail(Endpoint):
 				""" % (user_id,)
 			)
 			
-		user_form = UserForm(request.data)
+		user_form = UserForm(request.data, instance = user)
 		if user_form.is_valid():
 			user_form.save()
 			return Http201(
