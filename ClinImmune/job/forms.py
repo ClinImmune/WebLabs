@@ -1,5 +1,6 @@
 from django import forms
 from django.conf import settings
+from utils import
 
 class JobForm(forms.Form):
 	title        = forms.CharField(max_length = 144)
