@@ -31,10 +31,12 @@ class Document(models.Model):
 	def __init__(self, *args, **kwargs):
 		super(Document, self).__init__(*args, **kwargs)
 		self.schema = {
-			"title": self.title,
-			"date added": self.date_added,
-			"last updated": self.last_updated
-			"table of contents": [chapter.dict_list]
+			"title"             : self.title,
+			"date added"        : self.date_added,
+			"last updated"      : self.last_updated,
+			"table of contents" : [
+				chapter.dict_list for chapter in self.chapters
+			]
 		}
 		
 	# Defines a method which returns a full table of contents
@@ -132,11 +134,24 @@ class Section(models.Model):
 	@property
 	def dict_list(self):
 		fields = ["title", "number"]
-		return {key: self.schema[key] for key in fields}
+		try:
+			return {key: self.schema[key] for key in fields}
+		except KeyError:
+			raise ValueError("""
+				You must specify a correct schema for the section model. Also,
+				it would be worth checking dict_list.
+			""")
 	
 	@property
 	def dict_detail(self):
-		return self.schema
+		fields = ["title", "number", "text"]
+		try:
+			return {key: self.schema[key] for key in fields}
+		except KeyError:
+			raise ValueError("""
+				You must specify a correct schema for the section model. Also,
+				it would be worth checking dict_detail
+			""")
 	
 	def save(self, *args, **kwargs):
 		self.slug_title = slugify(self.title)

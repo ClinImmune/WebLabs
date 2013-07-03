@@ -8,10 +8,7 @@ connect('job_database')
 
 # Django settings for ClinImmune project.
 
-URL = "127.0.0.1:8000/"
-
-## ADDITIONAL SETTINGS
-
+URL             = "127.0.0.1:8000/"
 AUTH_USER_MODEL = 'lab_user.LabUser'
 
 ## REST OF SETTINGS
@@ -26,13 +23,12 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'test.db',
-        # The following settings are not used with sqlite3:
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
-        'PORT': '',                      # Set to empty string for default.
+        'ENGINE'   : 'django.db.backends.sqlite3',
+        'NAME'     : 'test.db',
+        'USER'     : '',
+        'PASSWORD' : '',
+        'HOST'     : '',
+        'PORT'     : '',
     }
 }
 
@@ -137,10 +133,10 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'restless',
     
+    'lab_user',
     'about',
     'doc',
     'job',
-    'lab_user',
     # Uncomment the next line to enable the admin:
     # 'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:

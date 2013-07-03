@@ -6,9 +6,9 @@ from django.contrib.auth.models import (
 from django.conf import settings
 from collections import OrderedDict
 
-from job.models import Job
+from job.models import SQLJob
 
-URL = URL.settings + "users/"
+URL = settings.URL + "users/"
 
 class LabUserManager(BaseUserManager):
     """
@@ -31,10 +31,10 @@ class LabUserManager(BaseUserManager):
             email,
             first_name,
             last_name,
-            organization=None,
-            job_title=None,
-            bio=None,
-            password=None
+            organization = None,
+            job_title    = None,
+            bio          = None,
+            password     = None
     ):
         """
         Creates a standard user with no administrative privledges
@@ -69,23 +69,23 @@ class LabUserManager(BaseUserManager):
             email,
             first_name,
             last_name,
-            organization,
-            job_title=None,
-            bio=None,
-            password=None
+            organization = None,
+            job_title    = None,
+            bio          = None,
+            password     = None
     ):
         """
         Creates an administrative user
         """    
                         
         user = self.create_user(
-            email=email,
-            first_name=first_name,
-            last_name=last_name,
-            organization=organization,
-            job_title=job_title,
-            bio=bio,
-            password=password
+            email        = email,
+            first_name   = first_name,
+            last_name    = last_name,
+            organization = organization,
+            job_title    = job_title,
+            bio          = bio,
+            password     = password
         )
         user.is_admin = True
         user.save(using=self._db)
@@ -100,24 +100,26 @@ class LabUser(AbstractBaseUser):
         last_name,
         organization,
     although, this will be discussed later
-    
     """
     email = models.EmailField(
         verbose_name = 'email address',
-        max_length   = 255,
+        max_length   = 254,
         unique       = True,
         db_index     = True,
     )
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
-    name_is_public = models.BooleanField(default=True)
-    email_is_public = models.BooleanField(default=False)
-    organization = models.CharField(max_length=150)
-    job_title = models.CharField(max_length=50, null=True)
-    bio = models.TextField(null=True)
-    is_active = models.BooleanField(default=True)
-    is_admin = models.BooleanField(default=False)
-    created = models.DateTimeField(auto_now_add=True)
+    first_name      = models.CharField(max_length = 50)
+    last_name       = models.CharField(max_length = 50)
+    name_is_public  = models.BooleanField(default = True)
+    email_is_public = models.BooleanField(default = False)
+    organization    = models.CharField(max_length = 150)
+    job_title       = models.CharField(max_length = 50, blank = True)
+    bio             = models.TextField(blank = True)
+    is_active       = models.BooleanField(default = True)
+    is_admin        = models.BooleanField(default = False)
+    created         = models.DateTimeField(
+    	editable     = False, 
+    	auto_now_add = True
+    )
     
     objects = LabUserManager()
     
@@ -129,7 +131,7 @@ class LabUser(AbstractBaseUser):
     ]
     
     def __init__(self, *args, **kwargs):
-    	super(LabUser, self).__init__(self, *args, **kwargs)
+    	super(LabUser, self).__init__(*args, **kwargs)
     	self.schema = {
     		"first name"   : self.first_name,
     		"last name"    : self.last_name,
@@ -137,8 +139,8 @@ class LabUser(AbstractBaseUser):
     		"organization" : self.organization,
     		"job title"    : self.job_title,
     		"bio"          : self.bio,
-    		"date created" : str(self.created)
-    		"url"          : URL + str(self.pk)
+    		"date created" : str(self.created),
+    		"url"          : ''.join([settings.URL, str(self.pk)])
     	}
     	 
     ## Generic Accessor properties
@@ -169,9 +171,9 @@ class LabUser(AbstractBaseUser):
     			fields += "email"
 
     	else:
-    		fields += "organization")
+    		fields += "organization"
     		if self.email_is_public:
-    			fields += "email
+    			fields += "email"
     	
     	return {key: self.schema[key] for key in fields}
 

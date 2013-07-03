@@ -1,11 +1,10 @@
 from django.db import models
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from mongoengine import * 
 from utils.mongo_fields import *
 
 import datetime
-
-LabUser = get_user_model()
 
 class SQLJob(models.Model):
 	"""
@@ -19,7 +18,8 @@ class SQLJob(models.Model):
 	date_created = models.DateTimeField(editable=False)
 	finished     = models.BooleanField(default=False)
 	combinations = models.IntegerField(editable=False)
-	locus        = models.CharField()
+	locus        = models.CharField(max_length=4)
+	status       = models.TextField(blank=True)
 	
 	def __init__(self, *args, **kwargs):
 		self.schema = {
