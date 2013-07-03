@@ -3,3 +3,16 @@ TODO:
 Fix custom user profile model
 Test all API endpoints, or just write tests
 
+--New
+Improve error messages of REST interface, and include rest schema in error
+messages
+
+Add Docstring for all rest classes for information about what each request
+returns.
+
+Check each dict method of spaces instead of underscores
+
+Also, see how django forms handles dictionaries so that ','.join(patients) is
+not required in the views, and "DPB1*01:02,DRB1*09:02".split(",")
+
+

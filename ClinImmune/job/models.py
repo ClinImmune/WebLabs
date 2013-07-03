@@ -9,7 +9,7 @@ import datetime
 class SQLJob(models.Model):
 	"""
 	Defines a job model for basic information that the API will serialize to.
-	It's purpose is only
+	It's purpose is only for user input.
 	"""
 	title        = models.CharField(max_length=144)
 	information  = models.TextField(blank=True)
@@ -17,11 +17,12 @@ class SQLJob(models.Model):
 	organization = models.CharField(max_length=150)
 	date_created = models.DateTimeField(editable=False)
 	finished     = models.BooleanField(default=False)
-	combinations = models.IntegerField(editable=False)
 	locus        = models.CharField(max_length=4)
+	combinations = models.IntegerField(editable=False)
 	status       = models.TextField(blank=True)
 	
 	def __init__(self, *args, **kwargs):
+		super(SQLJob, self).__init__(*args, **kwargs)
 		self.schema = {
 			"title"        : self.title,
 			"information"  : self.information,

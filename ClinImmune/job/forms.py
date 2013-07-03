@@ -1,9 +1,18 @@
 from django import forms
+from django.conf import settings
 
 class JobForm(forms.Form):
-	pass
+	title        = forms.CharField(max_length = 144)
+	information  = forms.CharField(required = False)
+	submitter    = forms.CharField() # validate user in view
+	locus        = forms.CharField() # will be changed to LocusField
+	combinations = forms.IntegerField(min_value = 1, max_value = 7)
 	
+"""
 class PatientForm(forms.Form):
-	pass
-	
+	patient_id = 
+	dx         = 
+	race       = 
+	loci       = 
+"""
 
