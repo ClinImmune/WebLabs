@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.text import slugify
+from django.conf import settings
 
 import datetime
 
@@ -19,24 +20,29 @@ The API will expose the models in the following manner
 						     - GET    => Returns a section, not public
 """
 
+URL = settings.URL + "users/"
+
 class Document(models.Model):
 	"""
 	Defines a Document
 	"""
-	title = models.CharField(max_length=144)
-	slug_title = models.SlugField(max_length=30)
-	date_added = models.DateTimeField(editable=False)
+	title        = models.CharField(max_length=144)
+	excerpt      = models.TextField()
+	slug_title   = models.SlugField(max_length=30)
+	date_added   = models.DateTimeField(editable=False)
 	last_updated = models.DateTimeField()
 	
 	def __init__(self, *args, **kwargs):
 		super(Document, self).__init__(*args, **kwargs)
 		self.schema = {
 			"title"             : self.title,
+			"excerpt"           : self.excerpt,
 			"date added"        : self.date_added,
 			"last updated"      : self.last_updated,
 			"table of contents" : [
 				chapter.dict_list for chapter in self.chapters
-			]
+			],
+			"url"               : ''.join([URL, self.pk])
 		}
 		
 	# Defines a method which returns a full table of contents
@@ -46,11 +52,11 @@ class Document(models.Model):
 	
 	@property
 	def dict_list(self):
-		return schema
+		fields = ["title","url"]
 		
 	@property
 	def dict_detail(self):
-		return 
+		return schema
 	
 	def __unicode__(self):
 		return self.slug_title
@@ -69,22 +75,24 @@ class Chapter(models.Model):
 	"""
 	Defines a chapter model which points to a document
 	"""
-	document = models.ForeignKey('Document', related_name="chapters")
-	title = models.CharField(max_length=144)
-	slug_title = models.SlugField(max_length=30)
-	number = models.IntegerField(
-				unique=True, 
-				verbose_name="Chapter Number"
+	document   = models.ForeignKey('Document', related_name="chapters")
+	title      = models.CharField(max_length = 144)
+	excerpt    = models.TextField()
+	slug_title = models.SlugField(max_length = 30)
+	number     = models.IntegerField(
+		unique       = True, 
+		verbose_name = "Chapter Number"
 	)
 	
 	def __init__(self, *args, **kwargs):
 		super(Chapter, self).__init__(*args, **kwargs)
 		self.schema = {
-			"title": self.title,
-			"number": self.number,
-			"sections": [
-				
-			]
+			"title"    : self.title,
+			"number"   : self.number,
+			"sections" : [
+				section.dict_list for section in self.sections
+			],
+			"url"      : ''.join([self.document.schema["url"], self.pk])
 		}
 		
 	@property
@@ -113,13 +121,13 @@ class Section(models.Model):
 	"""
 	Defines a section model which a chapter points to
 	"""
-	chapter = models.ForeignKey('Chapter')
-	title = models.CharField(max_length=144)
+	chapter    = models.ForeignKey('Chapter')
+	title      = models.CharField(max_length=144)
 	slug_title = models.SlugField(max_length=30)
-	text = models.TextField() # Will save text data as md file
-	number = models.IntegerField(
-		unique=True, 
-		verbose_name="Section Number"
+	text       = models.TextField() # Will save text data as md file
+	number     = models.IntegerField(
+		unique       = True, 
+		verbose_name = "Section Number"
 	)
 	
 	def __init__(self, *args, **kwargs):
@@ -127,19 +135,20 @@ class Section(models.Model):
 		self.schema = {
 			"title"  : self.title,
 			"number" : self.number,
-			"text"   : self.text
+			"text"   : self.text,
+			"url"    : ''.join([self.chapter.schema["url"], self.pk])
 		}
 	
 	
 	@property
 	def dict_list(self):
-		fields = ["title", "number"]
+		fields = ["title", "number", "url"]
 		try:
 			return {key: self.schema[key] for key in fields}
 		except KeyError:
 			raise ValueError("""
-				You must specify a correct schema for the section model. Also,
-				it would be worth checking dict_list.
+				You must specify a correct schema for the section model. 
+				Also, it would be worth checking dict_list for errors.
 			""")
 	
 	@property
@@ -149,8 +158,8 @@ class Section(models.Model):
 			return {key: self.schema[key] for key in fields}
 		except KeyError:
 			raise ValueError("""
-				You must specify a correct schema for the section model. Also,
-				it would be worth checking dict_detail
+				You must specify a correct schema for the section model. 
+				Also, it would be worth checking dict_detail for errors.
 			""")
 	
 	def save(self, *args, **kwargs):

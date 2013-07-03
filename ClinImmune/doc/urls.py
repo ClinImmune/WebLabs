@@ -1,19 +1,22 @@
 from django.conf.urls import patterns, include, url
-from rest_framework.urlpatterns import format_suffix_patterns
 from .views import *
 
 urlpatterns = patterns('',
 	url(
 		r'^$', 
-		DocumentList.as_view(),
-		name = 'document-list'
+		DocumentList.as_view()
 	),
 	url(
-		r'^(?P<pk>[0-9]+)/$', 
-		DocumentDetail.as_view(),
-		name = 'document-detail'	
-	)
+		r'^(?P<doc_id>\d+)/$', 
+		DocumentDetail.as_view()
+	),
+	url(
+		r'^(?P<doc_id>\d+)/(?P<chap_id>\d+)/', 
+		ChapterDetail.as_view()
+	),
+	url(
+		r'^(?P<doc_id>\d+)/(?P<chap_id>\d+)/(?P<sec_id>\d+)',
+		SectionDetail.as_view()
+	),
 ) 
-
-urlpatterns = format_suffix_patterns(urlpatterns)
 
