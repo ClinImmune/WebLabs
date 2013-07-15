@@ -1,0 +1,38 @@
+{
+	"comments": [
+		"This JSON document serves as a configuration file for systems administrators. It is important to note that JSON is a rigid format, so all documentation will be done in this comments array. For more information, please refer to http://www.ietf.org/rfc/rfc4627.txt or http://gun.io/blog/multi-line-strings-in-json/ . Formatting comments aside, this file has two primary keys: configuration and workgroups. The configuration key servers as a pointer to an object which will hold all configuration parameters for the job dispatcher. All messages passed between servers will be over some a specified transport layer, which is declared in the protocol value. A host, or less formally and address, will define which where the dispatching server can be accessed. Finally, a port should be defined for all transmissions. The workgroups key points to an array of workgroup objects. These objects are defined in a similar way above, but they receive messages about which workgroup should execute the next task. The default values are defined as below",
+		{
+			"defaults" : {
+				"configuration" : {
+					"protocol" : "tcp",
+					"host"     : "localhost",
+					"port"     : "5555"
+				},
+				"workgroups" : [
+					{
+						"protocol" : "tcp",
+						"host"     : "localhost",
+						"port"     : "6666"
+					},
+					{
+						"protocol" : "tcp",
+						"host"     : "localhost",
+						"port"     : "6666"
+					}
+				]
+			}
+		}
+	],
+	"configuration" : {
+		"protocol" : "",
+		"host"     : "",
+		"port"     : ""
+	},
+	"workgroups": [
+		{
+			"protocol" : "",
+			"host"     : "",
+			"port"     : ""
+		},
+	]
+}

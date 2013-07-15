@@ -16,12 +16,7 @@ class MongoAlleleField(StringField):
 	# This regular expression matches any allele of the format 
 	# allele*type:subtype where the type and subtype are each two decimal 
 	# characters. An example is DQA1*05:02. 
-	allele_pattern = re.compile(r"""
-		(A|B|C|DMA|DMB|DOA|DOB|DPA1|DPB1|DPA|DPB|DQA|DQB|DQA1|DQB1|DRA|DRB1|
-		DRB3|DRB4|DRB5|E|F|G|H|J|K|L|MICA|MICB|TAP1|TAP2|V) 
-		\*\d\d:\d\d
-		"""
-	)
+	allele_pattern = re.compile(r"(A|B|C|DMA|DMB|DOA|DOB|DPA1|DPB1|DPA|DPB|DQA|DQB|DQA1|DQB1|DRA|DRB1|DRB3|DRB4|DRB5|E|F|G|H|J|K|L|MICA|MICB|TAP1|TAP2|V\*\d\d:\d\d)")
 	
 	def __init__(self, **kwargs):
 		super(MongoAlleleField, self).__init__(**kwargs)
